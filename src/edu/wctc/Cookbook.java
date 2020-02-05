@@ -1,17 +1,19 @@
 package edu.wctc;
 
+import java.util.ArrayList;
+import java.util.MissingFormatArgumentException;
+
 public class Cookbook {
 
     // Hold all the meals that are read in from the file
-    private Meal[] meals = new Meal[100];
+    private ArrayList<Meal> meals = new ArrayList<>(100);
     // Hold the next (empty) index in the array
-    private int i = 0;
 
     public void addElementWithStrings(String mealTypeStr, String mealNameStr, String caloriesStr) {
         MealType mealType;
 
         // Do we have room in the array for one more?
-        if (i < meals.length) {
+
 
             // Find the correct enum using a switch? Or use .fromValue() instead?
             switch (mealTypeStr) {
@@ -40,13 +42,10 @@ public class Cookbook {
                 calories = 100;
                 System.out.println("Meal Creation Error: Invalid Calories " + caloriesStr + ", defaulted to 100.");
             }
-            meals[i++] = new Meal(mealType, mealNameStr, calories);
-        } else {
-            System.out.println("Meal Creation Error: Items exceeded system size.  File has " + i + ", while the system can only handle " + meals.length + ".");
-        }
+            meals.add(new Meal(mealType, mealNameStr, calories));
     }
 
-    public Meal[] getMeals() {
+    public ArrayList<Meal> getMeals() {
         return meals;
     }
 
@@ -58,6 +57,7 @@ public class Cookbook {
         }
     }
 
+
     public void printMealsByType(MealType mealType) {
         for (Meal item : meals) {
             if (item != null && item.getMealType() == mealType) {
@@ -65,12 +65,41 @@ public class Cookbook {
             }
         }
     }
+    public void printSubTotals() {
+        try {
+
+
+            System.out.printf("%9s %9s %9s %9s %9s \n", "Meal Type", "Total", "Mean", "Min", "Max");
+            MealType oldMealType = null;
+            int count = 0;
+            int subtotal = 0;
+            int min = 0;
+            int max = 0;
+            for (int i = 0; i < meals.size(); i++) {
+                if (meals.get(i) != null) {
+                    if (meals.get(i).getMealType() != oldMealType && oldMealType != null) {
+                        System.out.printf("%-9s %9s %9s %9s %9s \n", oldMealType.getMeal(), count, min, max, (subtotal / count));
+                    }
+                    oldMealType = meals.get(i).getMealType();
+                    count++;
+                    subtotal += meals.get(i).getCalories();
+                }
+            }
+
+            System.out.printf("%-9s %9s %9s %9s %9s \n", oldMealType.getMeal(), count, min, max, + (subtotal / count));
+        } catch (NullPointerException e){
+            System.out.println("Something is null, aborted Control Break. Error: " + e);
+        } catch(MissingFormatArgumentException e){
+            System.out.println(e);
+        }
+    }
+
 
     public void printByNameSearch(String s) {
         // Maybe add a message if no match found?
         for (Meal item : meals) {
             // Maybe make this case-insensitive?
-            if (item != null && item.getItem().indexOf(s) >= 0) {
+            if (item != null && item.getItem().contains(s)) {
                 System.out.println(item);
             }
         }

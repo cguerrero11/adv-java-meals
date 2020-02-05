@@ -57,7 +57,7 @@ public class Main {
                     searchByName();
                     break;
                 case "4":
-                    // doControlBreak();
+                    doControlBreak();
                     break;
                 case "5":
                     userContinue = false;
@@ -94,6 +94,10 @@ public class Main {
         }
 
         cookbook.printMealsByType(mealType);
+    }
+
+    private void doControlBreak(){
+        cookbook.printSubTotals();
     }
 
     private void searchByName() {
