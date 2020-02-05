@@ -69,24 +69,41 @@ public class Cookbook {
         try {
 
 
-            System.out.printf("%9s %9s %9s %9s %9s \n", "Meal Type", "Total", "Mean", "Min", "Max");
+            System.out.printf("%9s %9s %9s %9s %9s %9s \n", "Meal Type", "Total", "Mean", "Min", "Max", "Median");
             MealType oldMealType = null;
             int count = 0;
             int subtotal = 0;
             int min = 0;
             int max = 0;
+            double mean = 0;
+            int median = 0;
+            int index = 0;
             for (int i = 0; i < meals.size(); i++) {
                 if (meals.get(i) != null) {
+
                     if (meals.get(i).getMealType() != oldMealType && oldMealType != null) {
-                        System.out.printf("%-9s %9s %9s %9s %9s \n", oldMealType.getMeal(), count, min, max, (subtotal / count));
+                        System.out.printf("%-9s %9s %9s %9s %9s %9s \n", oldMealType.getMeal(), subtotal, String.format("%.2f", mean), min, max, median);
                     }
                     oldMealType = meals.get(i).getMealType();
+                    if(min > meals.get(i).getCalories()){
+                        min = meals.get(i).getCalories();
+                    } else {
+                        min = meals.get(i).getCalories();
+                    }
                     count++;
                     subtotal += meals.get(i).getCalories();
+                    mean = (double)subtotal / count;
+
+                    if(max < meals.get(i).getCalories()){
+                        max = meals.get(i).getCalories();
+                    }
+                    index = count/2;
+                    median = meals.get(index).getCalories();
+
                 }
             }
 
-            System.out.printf("%-9s %9s %9s %9s %9s \n", oldMealType.getMeal(), count, min, max, + (subtotal / count));
+            System.out.printf("%-9s %9s %9s %9s %9s %9s \n", oldMealType.getMeal(), subtotal, String.format("%.2f", mean), min, max, median);
         } catch (NullPointerException e){
             System.out.println("Something is null, aborted Control Break. Error: " + e);
         } catch(MissingFormatArgumentException e){
